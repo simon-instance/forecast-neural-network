@@ -1,14 +1,28 @@
 #!/usr/bin/python
 
-import getopt, sys
+import getopt, sys, json
+
+def convert_to_array(dataList):
+  arrayList = []
+  for data in dataList:
+    array = [data["station_code"], data["date"], data["FG"], data["TG"], data["PG"]]
+    arrayList.append(array)
+  return arrayList 
+
 
 def convertJsonToArrays(currentValue):
-    # replace objects with arrays, and save them to a file
+    try:
+        dataList = json.load(open(currentValue, "r"))
+        arrayList = convert_to_array(dataList)
+        with open("tmp/out.json", "w") as f:
+            json.dump(arrayList, f)
+    except:
+        print("Error: File not found")
 
 def loopArguments():
     argumentList = sys.argv[1:]
     # options help convert learn and show
-    options = "hcls"
+    options = "hc:ls"
     long_options = ["help", "convert", "learn", "show"]
     arguments, values = getopt.getopt(argumentList, options)
     for currentArgument, currentValue in arguments:
